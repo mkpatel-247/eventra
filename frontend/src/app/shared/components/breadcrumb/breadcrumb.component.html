@@ -1,0 +1,12 @@
+<div class="pagetitle">
+    <ng-container *ngIf="common.breadCrumb$ | async as data">
+        <h1>{{ data.value[0].pageTitle }}</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <ng-container *ngFor="let item of data.value[0].linkList; last as isLast">
+                    <li class="breadcrumb-item" [ngClass]="{'active': isLast}"><a>{{item.label}}</a></li>
+                </ng-container>
+            </ol>
+        </nav>
+    </ng-container>
+</div>

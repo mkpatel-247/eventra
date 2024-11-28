@@ -1,0 +1,133 @@
+<div class="card mb-0 shadow-none">
+    <div class="card-header d-flex justify-content-between mb-0">
+        <h4 class="fw-bolder mb-0">{{id ? 'Update' : 'Add'}} Event</h4>
+        <button type="button" class="btn btn-sm btn-outline-danger bi bi-x-lg" aria-label="Close"
+            (click)="id ? offcanvas.dismiss() : modal.dismissAll()">
+        </button>
+    </div>
+    <div class="card-body" [ngClass]="{'offcanvas-body custom-scrollbar': id}">
+        <form class="row g-2" [formGroup]="eventForm" (ngSubmit)="onSubmitEventForm()">
+            <!-- Hidden Id -->
+            <input type="hidden" name="id" formControlName="id">
+            <!-- Event Title -->
+            <div class="col-md-12">
+                <label for="title" class="form-label fw-bold">Event Title</label>
+                <input type="text" class="form-control"
+                    [ngClass]="{'border-danger': fc['title'].hasError('required') && (fc['title'].touched || isSubmitted)}"
+                    placeholder="Enter event title" formControlName="title">
+                <span *ngIf="(fc['title'].hasError('required')) && (fc['title']?.touched || isSubmitted)"
+                    class="text-danger">
+                    Event name is required.
+                </span>
+            </div>
+            <!-- Event Description -->
+            <div class="col-md-12">
+                <label for="description" class="form-label fw-bold">Event Description</label>
+                <textarea class="form-control" type="text"
+                    [ngClass]="{'border-danger':(fc['description'].hasError('required') && fc['description'].touched) || (isSubmitted && fc['description'].invalid)}"
+                    name="description" placeholder="Enter event description" rows="5"
+                    formControlName="description"></textarea>
+                <span
+                    *ngIf="(fc['description'].hasError('required') && fc['description'].touched) || (isSubmitted && fc['description'].invalid)"
+                    class="text-danger">
+                    Event description is required.
+                </span>
+            </div>
+            <!-- Timing -->
+            <fieldset class="border pb-2 px-2 rounded-3"
+                [ngClass]="{'border-danger': fc['timing'].hasError('dateRangeInvalid')}">
+                <legend class="w-auto float-none fs-6 fw-bold">Timing</legend>
+                <div formGroupName="timing" class="col-md-12">
+                    <div class="row g-2">
+                        <div class="col-lg-6">
+                            <label class="form-label" for="startDate">Start Date</label>
+                            <div class="input-group">
+                                <input id="startDate" class="form-control"
+                                    [ngClass]="{'border-danger':  (fc['timing'].get('start')?.hasError('required') && fc['timing'].get('start')?.touched) || (isSubmitted && fc['timing'].get('start')?.invalid) || fc['timing'].hasError('dateRangeInvalid')}"
+                                    placeholder="yyyy-mm-dd" name="startDp" type="datetime-local"
+                                    formControlName="start" />
+                            </div>
+                            <span
+                                *ngIf="(fc['timing'].get('start')?.hasError('required') && fc['timing'].get('start')?.touched) || (isSubmitted && fc['timing'].get('start')?.invalid)"
+                                class="text-danger">
+                                *required.
+                            </span>
+                        </div>
+                        <div class="col-lg-6">
+                            <label class="form-label" for="enddate">End Date</label>
+                            <div class="input-group">
+                                <input id="enddate" class="form-control"
+                                    [ngClass]="{'border-danger': ((fc['timing'].get('end')?.hasError('required') && fc['timing'].get('end')?.touched) || (isSubmitted &&fc['timing'].get('end')?.invalid) || fc['timing'].hasError('dateRangeInvalid'))}"
+                                    placeholder="yyyy-mm-dd" name="endDp" type="datetime-local" formControlName="end" />
+                            </div>
+                            <span
+                                *ngIf="((fc['timing'].get('end')?.hasError('required') && fc['timing'].get('end')?.touched) || (isSubmitted &&fc['timing'].get('end')?.invalid))"
+                                class="text-danger">
+                                *required.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <span class="text-danger" *ngIf="fc['timing'].hasError('dateRangeInvalid')">
+                * Please Select a Valid Date Range.
+            </span>
+            <!-- Address Group -->
+            <fieldset class="border pb-2 px-2 rounded-3">
+                <legend class="w-auto float-none fs-6 fw-bold">Address</legend>
+                <div formGroupName="address" class="col-md-12">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" class="form-control"
+                                [ngClass]="{'border-danger': (fc['address'].get('city')?.hasError('required') && fc['address'].get('city')?.touched) || (fc['address'].get('city')?.invalid && isSubmitted)}"
+                                id="inputAddres5s" placeholder="Enter event city" formControlName="city">
+                            <span
+                                *ngIf="(fc['address'].get('city')?.hasError('required') && fc['address'].get('city')?.touched) || (fc['address'].get('city')?.invalid && isSubmitted)"
+                                class="text-danger">
+                                *required.
+                            </span>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="area" class="form-label">Area</label>
+                            <input type="text" class="form-control"
+                                [ngClass]="{'border-danger': (fc['address'].get('area')?.hasError('required') && fc['address'].get('area')?.touched) || (fc['address'].get('area')?.invalid && isSubmitted)}"
+                                id="inputAddress2" placeholder="Enter event area" formControlName="area">
+                            <span
+                                *ngIf="(fc['address'].get('area')?.hasError('required') && fc['address'].get('area')?.touched) || (fc['address'].get('area')?.invalid && isSubmitted)"
+                                class="text-danger">
+                                *required.
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+            </fieldset>
+            <!-- Image -->
+            <div class="col-md-12">
+                <label for="formFile" class="form-label fw-bold">Image</label>
+                <input class="form-control"
+                    [ngClass]="{'border-danger': (fc['image'].hasError('required') && fc['image'].touched) || (isSubmitted && fc['image'].invalid)}"
+                    type="file" accept="image/png, image/jpeg" id="formFile" (change)="onFileChange($event)"
+                    formControlName="image">
+                <span
+                    *ngIf="(fc['image'].hasError('required') && fc['image'].touched) || (isSubmitted && fc['image'].invalid)"
+                    class="text-danger">
+                    *required.
+                </span>
+
+            </div>
+            <!-- Uploaded Image -->
+            <div class="col-md-12" *ngIf="profileImage">
+                <img [src]="profileImage" class="profile-image me-2" alt="">
+                <label for="selectedProfileImage">Selected Image</label>
+            </div>
+            <!-- Button -->
+            <div class="text-center d-md-flex justify-content-md-center mt-3">
+                <button type="submit" class="btn {{ id ? 'btn-outline-warning': 'theme-color-button'}}">
+                    {{ id ? 'Update Event' : 'Add Event' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
