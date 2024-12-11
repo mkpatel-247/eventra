@@ -1,6 +1,7 @@
 import express from "express";
 import connectDB from "./src/config/db-connect.js";
-
+import authRoutes from "./src/routes/auth.routes.js";
+import eventRoutes from "./src/routes/event.routes.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -13,7 +14,8 @@ app.use(express.urlencoded({ extended: false }));
 
 connectDB();
 
-app.use("/task", taskRoutes);
+app.use("/auth", authRoutes);
+app.use("/event", eventRoutes);
 
 app.listen(process.env.PORT || PORT, () => {
   console.log(
