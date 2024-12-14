@@ -1,0 +1,36 @@
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow-none my-0 rounded-0 rounded-top-2">
+                <div class="card-body mt-3 pb-2">
+                    <div class="d-flex flex-row justify-content-around">
+                        <div class="me-auto fs-5">
+                            <b>
+                                <i class="bi bi-{{ viewMode ? 'calendar2-week' : 'list' }}"></i>
+
+                                {{ viewMode ? 'Calendar' : 'List' }}
+                            </b>
+                        </div>
+                        <div class="fs-5">
+                            <label class="form-check-label me-2" for="flexSwitchCheckDefault">
+                                {{ viewMode ? 'Calendar' : 'List' }}
+                            </label>
+                        </div>
+                        <div class="form-check form-switch fs-5">
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                                (click)="toggleViewButton()" [checked]="viewMode">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card m-0 border-0 shadow-none rounded-0 rounded-bottom-2">
+                <div class="card-body mt-3">
+                    <!-- <ng-template #manageEvents></ng-template> -->
+                    <app-list-view *ngIf="!viewMode"></app-list-view>
+                    <app-calendar-view *ngIf="viewMode"></app-calendar-view>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

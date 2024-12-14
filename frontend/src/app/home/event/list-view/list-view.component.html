@@ -1,0 +1,53 @@
+<div class="d-flex justify-content-between">
+    <h5 class="card-title m-0 p-0 mb-3">All Event List</h5>
+    <button class="btn theme-color-button" (click)="addEvent()">
+        <i class="bi bi-calendar2-plus-fill me-1"></i>
+        Add Event
+    </button>
+</div>
+<div class="table-responsive">
+
+    <table class="table table text-center">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Image</th>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Address</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let item of eventList">
+                <tr>
+
+                    <th scope="row">{{ item.id }}</th>
+                    <td>
+                        <img src="{{ item.image }}" class="profile-image" alt="Image not found" />
+                    </td>
+                    <td>{{ item.title }}</td>
+                    <td>{{ item.description.length > 30 ? item.description.substring(0, 31)+'...' : item.description }}
+                    </td>
+                    <td>{{ item.timing.start | date : 'medium' }}</td>
+                    <td>{{ item.timing.end | date : 'medium'}}</td>
+                    <td>
+                        <button class="btn btn-link" (click)="viewLocation(item.address)">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-outline-info me-2" (click)="viewEventDetails(item)">
+                            <i class="bi bi-info-circle"></i>
+                        </button>
+                        <button class="btn btn-outline-danger" (click)="deleteEvent(item.id)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+</div>
