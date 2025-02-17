@@ -1,4 +1,4 @@
-import { sendResponse } from "./responseHandler";
+import { sendResponse } from "./responseHandler.js";
 
 /**
  * Centralize the error handling use this function.

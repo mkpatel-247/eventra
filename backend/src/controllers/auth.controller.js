@@ -1,6 +1,6 @@
-import Users from "../models/users.models";
-import { catchAsync } from "../utils/apiError";
-import { sendResponse } from "../utils/responseHandler";
+import Users from "../models/users.models.js";
+import { catchAsync } from "../utils/apiError.js";
+import { sendResponse } from "../utils/responseHandler.js";
 
 export const login = catchAsync(async (req, res, next) => {
     const { email, password } = req.body;
