@@ -1,12 +1,12 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { LOGIN_API, LOGOUT_API } from '../constant/api.constant';
-import { Observable } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { LOGIN_API, LOGOUT_API } from "../constant/api.constant";
+import { Observable } from "rxjs";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
-export class HttpService {
+export class AuthService {
   constructor(private http: HttpClient) {}
 
   /**

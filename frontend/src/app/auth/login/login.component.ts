@@ -12,15 +12,15 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import { HttpService } from "src/app/shared/services/http.service";
-import { Router } from "@angular/router";
+import { AuthService } from "src/app/shared/services/auth.service";
+import { Router, RouterModule } from "@angular/router";
 import { setLocalStorage } from "src/app/shared/common/function";
 import { TOKEN } from "src/app/shared/constant/keys.constant";
 
 @Component({
   selector: "app-login",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpService,
+    private authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit {
     const value = this.loginForm.value;
     if (this.loginForm.valid) {
       //Subscribe login() from service and fetch response.
-      this.http.login(value).subscribe({
+      this.authService.login(value).subscribe({
         next: (response: any) => {
           //Set Token & navigate to `/home` route.
           setLocalStorage(TOKEN, response.data);

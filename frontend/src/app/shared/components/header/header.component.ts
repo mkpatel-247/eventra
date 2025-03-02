@@ -1,17 +1,17 @@
-import { ChangeDetectionStrategy, Component, Renderer2 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
-import { Router } from '@angular/router';
-import { HttpService } from '../../services/http.service';
-import { TOKEN } from '../../constant/keys.constant';
-import { CommonService } from '../../services/common.service';
+import { ChangeDetectionStrategy, Component, Renderer2 } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { BreadcrumbComponent } from "../breadcrumb/breadcrumb.component";
+import { Router } from "@angular/router";
+import { AuthService } from "../../services/auth.service";
+import { TOKEN } from "../../constant/keys.constant";
+import { CommonService } from "../../services/common.service";
 
 @Component({
-  selector: 'app-header',
+  selector: "app-header",
   standalone: true,
   imports: [CommonModule, BreadcrumbComponent],
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+  templateUrl: "./header.component.html",
+  styleUrls: ["./header.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
@@ -20,18 +20,18 @@ export class HeaderComponent {
 
   constructor(
     private router: Router,
-    private http: HttpService,
+    private authService: AuthService,
     private common: CommonService
-  ) { }
+  ) {}
 
   /**
    * Remove Token from localStorage and make the user logout from website.
    */
   logoutButton() {
-    this.http.logout().subscribe({
+    this.authService.logout().subscribe({
       next: (response: any) => {
         localStorage.removeItem(TOKEN);
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl("/");
       },
     });
   }
@@ -41,10 +41,10 @@ export class HeaderComponent {
    */
   sidebarToggle() {
     if (this.sidebarShow) {
-      this.common.addClassInBody('toggle-sidebar');
+      this.common.addClassInBody("toggle-sidebar");
       this.sidebarShow = false;
     } else {
-      this.common.removeClassInBody('toggle-sidebar');
+      this.common.removeClassInBody("toggle-sidebar");
       this.sidebarShow = true;
     }
   }
