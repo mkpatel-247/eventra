@@ -1,11 +1,10 @@
 import express from "express";
 import { login } from "../controllers/auth.controller.js";
-import { requiredFields } from "../middlewares/field-validation.middlewares.js";
-import { loginRequiredField } from "../utils/field-validators.js";
+import { validation } from "../middlewares/field-validation.middlewares.js";
 
 const router = express.Router();
 
-router.post("/login", requiredFields(loginRequiredField), login);
+router.post("/login", validation("loginRequiredField"), login);
 router.post("/register");
 
 export default router;
