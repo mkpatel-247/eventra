@@ -3,26 +3,26 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
-} from '@angular/forms';
-import { HttpService } from 'src/app/shared/services/http.service';
-import { Router } from '@angular/router';
-import { setLocalStorage } from 'src/app/shared/common/function';
-import { TOKEN } from 'src/app/shared/constant/keys.constant';
+} from "@angular/forms";
+import { HttpService } from "src/app/shared/services/http.service";
+import { Router } from "@angular/router";
+import { setLocalStorage } from "src/app/shared/common/function";
+import { TOKEN } from "src/app/shared/constant/keys.constant";
 
 @Component({
-  selector: 'app-login',
+  selector: "app-login",
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+  templateUrl: "./login.component.html",
+  styleUrls: ["./login.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnInit {
@@ -36,10 +36,6 @@ export class LoginComponent implements OnInit {
   isSubmitted: boolean = false;
   loginFailed: boolean = false;
 
-  ngOnInit(): void {
-    this.initializeLoginForm();
-  }
-
   constructor(
     private fb: FormBuilder,
     private http: HttpService,
@@ -47,13 +43,17 @@ export class LoginComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
+  ngOnInit(): void {
+    this.initializeLoginForm();
+  }
+
   /**
    * Create Login Form control.
    */
   initializeLoginForm() {
     this.loginForm = this.fb.group({
-      email: new FormControl('', [Validators.email, Validators.required]),
-      password: new FormControl('', [Validators.required]),
+      email: new FormControl("", [Validators.email, Validators.required]),
+      password: new FormControl("", [Validators.required]),
     });
   }
 
@@ -69,7 +69,7 @@ export class LoginComponent implements OnInit {
         next: (response: any) => {
           //Set Token & navigate to `/home` route.
           setLocalStorage(TOKEN, response.data);
-          this.router.navigateByUrl('/home');
+          this.router.navigateByUrl("/home");
         },
         error: (err: any) => {
           this.loginFailed = true;
