@@ -13,7 +13,7 @@ import { TOKEN } from "../shared/constant/keys.constant";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthComponent implements OnInit {
-  constructor(private router: Router) {}
+  constructor(public router: Router) {}
 
   //Check if token is there redirect to home route.
   ngOnInit(): void {

@@ -6,29 +6,47 @@
       <h5 class="card-title text-center pb-0 fs-4">Create an Account</h5>
     </div>
 
-    <form class="row g-3 needs-validation" novalidate>
+    <form class="row g-3 needs-validation" [formGroup]="registerForm" (ngSubmit)="onSubmitRegisterForm()">
       <div class="col-6">
-        <label for="yourName" class="form-label">First Name</label>
-        <input type="text" name="name" class="form-control" id="yourName" required>
-        <div class="invalid-feedback">Please, enter your first name!</div>
+        <label for="firstName" class="form-label">First Name</label>
+        <input type="text" name="name" class="form-control" id="firstName" placeholder="Enter your first name"
+          formControlName="firstName"
+          [ngClass]="{'border-danger': fc['firstName'].hasError('required') && fc['firstName'].touched}">
+        <ng-container *ngIf="fc['firstName'].hasError('required') && fc['firstName'].touched">
+          <span class="text-danger">Please, enter your first name!</span>
+        </ng-container>
       </div>
 
       <div class="col-6">
-        <label for="yourName" class="form-label">Last Name</label>
-        <input type="text" name="name" class="form-control" id="yourName" required>
-        <div class="invalid-feedback">Please, enter your last name!</div>
+        <label for="lastName" class="form-label">Last Name</label>
+        <input type="text" name="name" class="form-control" id="lastName" placeholder="Enter your last name"
+          formControlName="lastName">
+        <ng-container *ngIf="fc['lastName'].hasError('required') && fc['lastName'].touched">
+          <span class="text-danger">Please, enter your last name!</span>
+        </ng-container>
       </div>
 
       <div class="col-12">
         <label for="yourEmail" class="form-label">Email Address</label>
-        <input type="email" name="email" class="form-control" id="yourEmail" required>
-        <div class="invalid-feedback">Please enter a valid Email adddress!</div>
+        <input type="email" name="email" class="form-control" id="yourEmail" placeholder="Enter your email"
+          formControlName="email">
+        <ng-container *ngIf="fc['email'].errors">
+          <span class="text-danger" *ngIf="fc['email'].hasError('required') && fc['email'].touched">Please enter a
+            email!</span>
+          <span class="text-danger"
+            *ngIf="fc['email'].hasError('email') && !fc['email'].hasError('required') && fc['email'].touched">Please
+            enter a valid
+            Email address!</span>
+        </ng-container>
       </div>
 
       <div class="col-12">
         <label for="yourPassword" class="form-label">Password</label>
-        <input type="password" name="password" class="form-control" id="yourPassword" required>
-        <div class="invalid-feedback">Please enter your password!</div>
+        <input type="password" name="password" class="form-control" id="yourPassword" placeholder="Enter your password"
+          formControlName="password">
+        <ng-container *ngIf="fc['password'].hasError('required') && fc['password'].touched">
+          <span class="text-danger">Please enter your password!</span>
+        </ng-container>
       </div>
 
       <div class="col-12">
