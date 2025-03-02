@@ -1,4 +1,4 @@
-import { sendResponse } from "./responseHandler.js";
+import { sendResponse } from "./response-handler.js";
 
 /**
  * Centralize the error handling use this function.
@@ -8,9 +8,9 @@ import { sendResponse } from "./responseHandler.js";
  * @returns - send API response.
  */
 export const catchAsync = (fn) => async (req, res, next) => {
-    try {
-        await fn(req, res, next);
-    } catch (error) {
-        return sendResponse(res, error.statusCode, error.message);
-    }
+  try {
+    await fn(req, res, next);
+  } catch (error) {
+    return sendResponse(res, error.statusCode, error.message);
+  }
 };

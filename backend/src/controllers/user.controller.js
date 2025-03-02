@@ -1,5 +1,5 @@
-import { catchAsync } from "../utils/apiError";
+import { catchAsync } from "../utils/api-error.js";
 
 export const register = catchAsync((req, res, next) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 });
