@@ -11,3 +11,9 @@ interface ITiming {
   start: string;
   end: string;
 }
+
+export interface IToastInfo {
+  header: string;
+  body: string;
+  delay?: number;
+}

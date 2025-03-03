@@ -7,7 +7,7 @@
     </div>
 
     <form class="row g-3 needs-validation" [formGroup]="registerForm" (ngSubmit)="onSubmitRegisterForm()">
-      <div class="col-6">
+      <div class="col-12 col-lg-6">
         <label for="firstName" class="form-label">First Name</label>
         <input type="text" name="name" class="form-control" id="firstName" placeholder="Enter your first name"
           formControlName="firstName"
@@ -17,10 +17,11 @@
         </ng-container>
       </div>
 
-      <div class="col-6">
+      <div class="col-12 col-lg-6">
         <label for="lastName" class="form-label">Last Name</label>
         <input type="text" name="name" class="form-control" id="lastName" placeholder="Enter your last name"
-          formControlName="lastName">
+          formControlName="lastName"
+          [ngClass]="{'border-danger': fc['lastName'].hasError('required') && fc['lastName'].touched}">
         <ng-container *ngIf="fc['lastName'].hasError('required') && fc['lastName'].touched">
           <span class="text-danger">Please, enter your last name!</span>
         </ng-container>
@@ -29,21 +30,24 @@
       <div class="col-12">
         <label for="yourEmail" class="form-label">Email Address</label>
         <input type="email" name="email" class="form-control" id="yourEmail" placeholder="Enter your email"
-          formControlName="email">
+          formControlName="email"
+          [ngClass]="{'border-danger': (fc['email'].hasError('required') || fc['email'].hasError('email')) && fc['email'].touched}">
         <ng-container *ngIf="fc['email'].errors">
-          <span class="text-danger" *ngIf="fc['email'].hasError('required') && fc['email'].touched">Please enter a
-            email!</span>
+          <span class="text-danger" *ngIf="fc['email'].hasError('required') && fc['email'].touched">
+            Please enter a email!
+          </span>
           <span class="text-danger"
-            *ngIf="fc['email'].hasError('email') && !fc['email'].hasError('required') && fc['email'].touched">Please
-            enter a valid
-            Email address!</span>
+            *ngIf="fc['email'].hasError('email') && !fc['email'].hasError('required') && fc['email'].touched">
+            Please enter a valid Email address!
+          </span>
         </ng-container>
       </div>
 
       <div class="col-12">
         <label for="yourPassword" class="form-label">Password</label>
         <input type="password" name="password" class="form-control" id="yourPassword" placeholder="Enter your password"
-          formControlName="password">
+          formControlName="password"
+          [ngClass]="{'border-danger': fc['password'].hasError('required') && fc['password'].touched}">
         <ng-container *ngIf="fc['password'].hasError('required') && fc['password'].touched">
           <span class="text-danger">Please enter your password!</span>
         </ng-container>
