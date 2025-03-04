@@ -16,7 +16,7 @@ import { AuthService } from "src/app/shared/services/auth.service";
 import { Router, RouterModule } from "@angular/router";
 import { setLocalStorage } from "src/app/shared/common/function";
 import { TOKEN } from "src/app/shared/constant/keys.constant";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "src/app/shared/services/toast.service";
 
 @Component({
   selector: "app-login",
@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private toast: ToastrService
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -71,12 +71,12 @@ export class LoginComponent implements OnInit {
         next: (response: any) => {
           //Set Token & navigate to `/home` route.
           setLocalStorage(TOKEN, response?.data);
-          this.toast.success(response?.message, "Success");
+          this.toastService.success(response?.message);
           this.router.navigateByUrl("/home");
         },
         error: (err: any) => {
           this.loginFailed = true;
-          this.toast.error(err?.error?.message, "Error");
+          this.toastService.error(err.message);
           this.cdr.detectChanges();
         },
       });
