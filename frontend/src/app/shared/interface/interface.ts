@@ -13,7 +13,9 @@ interface ITiming {
 }
 
 export interface IToastInfo {
-  header: string;
-  body: string;
+  message: string;
+  class: string;
+  show: boolean;
+  icon: string | undefined;
   delay?: number;
 }

@@ -8,6 +8,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
+import { ToastService } from "src/app/shared/components/toast/toast.service";
+import { TOAST } from "src/app/shared/constant/keys.constant";
 
 @Component({
   selector: "app-register",
@@ -29,7 +31,8 @@ export class RegisterComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -67,6 +70,10 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.valid) {
       this.authService.register(this.registerForm.value).subscribe({
         next: (res) => {
+          this.toastService.showToast(
+            TOAST.TOAST_STATE.success,
+            "Register Successfully"
+          );
           this.router.navigate(["/auth/login"]);
         },
         error: (error) => {

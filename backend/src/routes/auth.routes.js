@@ -11,5 +11,6 @@ router.post(
   validateMiddleware(validationSchemas.registerUser),
   registerUser
 );
+router.post("/logout", logout);
 
 export default router;

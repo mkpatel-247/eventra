@@ -1,4 +1,10 @@
-<ng-container *ngFor="let toast of toastService.toaster">
-  <ngb-toast [header]="toast.header" [autohide]="true" [delay]="toast?.delay || 2500"
-    (hidden)="toastService.remove(toast)">{{ toast.body }}</ngb-toast>
+<ng-container *ngFor="let toast of toastMessage; index as i">
+  <div class="toast-container toast-messages position-absolute top-0 end-0 p-3" style="z-index: 1200" *ngIf="toast.show"
+    (click)="toastService.closeToast(i)">
+    <ngb-toast [class]="toast.class" [autohide]="true" [delay]="3000">
+      <i [ngClass]="''" class="text-white">
+        {{ toast.message }}
+      </i>
+    </ngb-toast>
+  </div>
 </ng-container>

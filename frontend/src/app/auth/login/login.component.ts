@@ -15,8 +15,8 @@ import {
 import { AuthService } from "src/app/shared/services/auth.service";
 import { Router, RouterModule } from "@angular/router";
 import { setLocalStorage } from "src/app/shared/common/function";
-import { TOKEN } from "src/app/shared/constant/keys.constant";
-import { ToastService } from "src/app/shared/services/toast.service";
+import { TOAST, TOKEN } from "src/app/shared/constant/keys.constant";
+import { ToastService } from "src/app/shared/components/toast/toast.service";
 
 @Component({
   selector: "app-login",
@@ -71,13 +71,19 @@ export class LoginComponent implements OnInit {
         next: (response: any) => {
           //Set Token & navigate to `/home` route.
           setLocalStorage(TOKEN, response?.data);
-          this.toastService.success(response?.message);
+          this.toastService.showToast(
+            TOAST.TOAST_STATE.success,
+            "Login Successfully"
+          );
           this.router.navigateByUrl("/home");
         },
         error: (err: any) => {
           this.loginFailed = true;
-          this.toastService.error(err.message);
-          this.cdr.detectChanges();
+          this.toastService.showToast(
+            TOAST.TOAST_STATE.danger,
+            err?.error?.message
+          );
+          this.cdr.markForCheck();
         },
       });
     }

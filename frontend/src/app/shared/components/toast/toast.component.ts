@@ -1,6 +1,11 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { ToastService } from "../../services/toast.service";
+import { ToastService } from "./toast.service";
 import { NgbToastModule } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
@@ -11,6 +16,17 @@ import { NgbToastModule } from "@ng-bootstrap/ng-bootstrap";
   styleUrls: ["./toast.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ToastComponent {
-  constructor(public toastService: ToastService) {}
+export class ToastComponent implements OnInit {
+  toastMessage: any = [];
+  constructor(
+    public toastService: ToastService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnInit(): void {
+    this.toastService.showToast$.subscribe((res) => {
+      this.toastMessage = res;
+      this.cdr.markForCheck();
+    });
+  }
 }
