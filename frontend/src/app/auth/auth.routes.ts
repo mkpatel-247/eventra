@@ -1,33 +1,40 @@
-import { Routes } from '@angular/router';
-import { AuthComponent } from './auth.component';
+import { Routes } from "@angular/router";
+import { AuthComponent } from "./auth.component";
 
 export const authRoutes: Routes = [
   {
-    path: '',
+    path: "",
     component: AuthComponent,
     children: [
       {
-        path: '',
-        redirectTo: 'login',
-        pathMatch: 'full',
+        path: "",
+        redirectTo: "login",
+        pathMatch: "full",
       },
       {
-        path: 'login',
+        path: "login",
         loadComponent: () =>
-          import('./login/login.component').then((m) => m.LoginComponent),
+          import("./login/login.component").then((m) => m.LoginComponent),
+      },
+      {
+        path: "register",
+        loadComponent: () =>
+          import("./register/register.component").then(
+            (m) => m.RegisterComponent
+          ),
       },
     ],
   },
   {
-    path: 'error404',
+    path: "error404",
     loadComponent: () =>
-      import('../shared/components/error404/error404.component').then(
+      import("../shared/components/error404/error404.component").then(
         (m) => m.Error404Component
       ),
   },
   {
-    path: '**',
-    redirectTo: 'error404',
-    pathMatch: 'full',
+    path: "**",
+    redirectTo: "error404",
+    pathMatch: "full",
   },
 ];

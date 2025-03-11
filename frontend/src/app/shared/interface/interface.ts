@@ -11,3 +11,11 @@ interface ITiming {
   start: string;
   end: string;
 }
+
+export interface IToastInfo {
+  message: string;
+  class: string;
+  show: boolean;
+  icon: string | undefined;
+  delay?: number;
+}

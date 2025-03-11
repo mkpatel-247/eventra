@@ -3,26 +3,27 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
 import {
   FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
-} from '@angular/forms';
-import { HttpService } from 'src/app/shared/services/http.service';
-import { Router } from '@angular/router';
-import { setLocalStorage } from 'src/app/shared/common/function';
-import { TOKEN } from 'src/app/shared/constant/keys.constant';
+} from "@angular/forms";
+import { AuthService } from "src/app/shared/services/auth.service";
+import { Router, RouterModule } from "@angular/router";
+import { setLocalStorage } from "src/app/shared/common/function";
+import { TOAST, TOKEN } from "src/app/shared/constant/keys.constant";
+import { ToastService } from "src/app/shared/components/toast/toast.service";
 
 @Component({
-  selector: 'app-login',
+  selector: "app-login",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  templateUrl: "./login.component.html",
+  styleUrls: ["./login.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnInit {
@@ -36,24 +37,25 @@ export class LoginComponent implements OnInit {
   isSubmitted: boolean = false;
   loginFailed: boolean = false;
 
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private toastService: ToastService
+  ) {}
+
   ngOnInit(): void {
     this.initializeLoginForm();
   }
-
-  constructor(
-    private fb: FormBuilder,
-    private http: HttpService,
-    private router: Router,
-    private cdr: ChangeDetectorRef
-  ) {}
 
   /**
    * Create Login Form control.
    */
   initializeLoginForm() {
     this.loginForm = this.fb.group({
-      email: new FormControl('', [Validators.email, Validators.required]),
-      password: new FormControl('', [Validators.required]),
+      email: new FormControl("", [Validators.email, Validators.required]),
+      password: new FormControl("", [Validators.required]),
     });
   }
 
@@ -65,15 +67,23 @@ export class LoginComponent implements OnInit {
     const value = this.loginForm.value;
     if (this.loginForm.valid) {
       //Subscribe login() from service and fetch response.
-      this.http.login(value).subscribe({
+      this.authService.login(value).subscribe({
         next: (response: any) => {
           //Set Token & navigate to `/home` route.
-          setLocalStorage(TOKEN, response.data);
-          this.router.navigateByUrl('/home');
+          setLocalStorage(TOKEN, response?.data);
+          this.toastService.showToast(
+            TOAST.TOAST_STATE.success,
+            "Login Successfully"
+          );
+          this.router.navigateByUrl("/home");
         },
         error: (err: any) => {
           this.loginFailed = true;
-          this.cdr.detectChanges();
+          this.toastService.showToast(
+            TOAST.TOAST_STATE.danger,
+            err?.error?.message
+          );
+          this.cdr.markForCheck();
         },
       });
     }

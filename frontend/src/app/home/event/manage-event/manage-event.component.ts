@@ -42,6 +42,15 @@ export class ManageEventComponent implements OnInit {
   //Date value from calendarView.
   @Input() date: any = '';
   profileImage: string | ArrayBuffer | undefined | null;
+  
+  constructor(
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef,
+    public offcanvas: NgbOffcanvas,
+    public modal: NgbModal,
+    private common: CommonService,
+    private loggerService: LoggerService
+  ) {}
 
   ngOnInit(): void {
     this.loggerService.error(['Add Event modal open']).subscribe();
@@ -59,15 +68,6 @@ export class ManageEventComponent implements OnInit {
     //Get event object from localStorage.
     this.allEvent = getLocalStorage(EVENT);
   }
-
-  constructor(
-    private fb: FormBuilder,
-    private cdr: ChangeDetectorRef,
-    public offcanvas: NgbOffcanvas,
-    public modal: NgbModal,
-    private common: CommonService,
-    private loggerService: LoggerService
-  ) {}
 
   /**
    * Create Event Form controls
@@ -144,4 +144,5 @@ export class ManageEventComponent implements OnInit {
   generateUniqueEventId() {
     return this.allEvent.length ? this.allEvent.length + 1 : 1;
   }
+
 }
