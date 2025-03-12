@@ -27,9 +27,11 @@ export const login = catchAsync(async (req, res, next) => {
     httpOnly: true,
     secure: true,
   };
+  // Store tokens in cookies
   res
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options);
+  // Prepare object to send in response of successful login and token in response
   const data = {
     email: user?.email,
     firstName: user.firstName,
