@@ -99,6 +99,8 @@ export class CalendarViewComponent implements OnInit, OnDestroy {
     const viewModalRef = this.modalService.open(ModalComponent, {
       size: "lg",
       centered: true,
+      modalDialogClass: "custom-modal-dialog",
+      backdropClass: "custom-modal-backdrop",
     });
     viewModalRef.componentInstance.eventDetails = findObjectNIndex(ID).object;
   }

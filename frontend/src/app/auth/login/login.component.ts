@@ -70,7 +70,8 @@ export class LoginComponent implements OnInit {
       this.authService.login(value).subscribe({
         next: (response: any) => {
           //Set Token & navigate to `/home` route.
-          setLocalStorage(TOKEN, response?.data);
+          const { accessToken } = response?.data;
+          setLocalStorage(TOKEN, accessToken);
           this.toastService.showToast(
             TOAST.TOAST_STATE.success,
             "Login Successfully"
