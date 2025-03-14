@@ -1,6 +1,6 @@
 import express from "express";
 import connectDB from "./src/config/db-connect.js";
-import authRoutes from "./src/routes/auth.routes.js";
+import userRoutes from "./src/routes/user.routes.js";
 import eventRoutes from "./src/routes/event.routes.js";
 import dotenv from "dotenv";
 import { sendResponse } from "./src/utils/response-handler.js";
@@ -21,12 +21,12 @@ app.use(cookieParser());
 
 connectDB();
 
-app.use((req, res, next) => {
+app.use((req, _, next) => {
   console.log("Request URL:", req.url);
   next();
 });
 
-app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
 app.use("/event", eventRoutes);
 
 app.listen(process.env.PORT || PORT, () => {

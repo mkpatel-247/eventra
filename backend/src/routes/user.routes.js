@@ -1,8 +1,8 @@
 import express from "express";
-import { login, logout, registerUser } from "../controllers/auth.controller.js";
+import { login, logout, registerUser } from "../controllers/user.controller.js";
 import { validateMiddleware } from "../middlewares/field-validation.middlewares.js";
 import { validationSchemas } from "../utils/field-validators.js";
-import { isAuthenticated } from "../middlewares/authenticatioin.middlewares.js";
+import { isAuthenticated } from "../middlewares/authentication.middlewares.js";
 
 const router = express.Router();
 
