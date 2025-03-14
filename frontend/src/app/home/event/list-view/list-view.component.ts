@@ -62,6 +62,8 @@ export class ListViewComponent implements OnInit, OnDestroy {
     const locationModalRef = this.modalService.open(ModalComponent, {
       size: "lg",
       centered: true,
+      modalDialogClass: "custom-modal-dialog",
+      backdropClass: "custom-modal-backdrop",
     });
     locationModalRef.componentInstance.location = address;
   }
@@ -73,6 +75,8 @@ export class ListViewComponent implements OnInit, OnDestroy {
     const viewModalRef = this.modalService.open(ModalComponent, {
       size: "lg",
       centered: true,
+      modalDialogClass: "custom-modal-dialog",
+      backdropClass: "custom-modal-backdrop",
     });
     viewModalRef.componentInstance.eventDetails = event;
   }

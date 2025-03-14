@@ -42,3 +42,7 @@
   background-color: #4154f1;
   border-radius: 10px;
 }
+
+::ng-deep.offcanvas.show {
+  width: 550px;
+}

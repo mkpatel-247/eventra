@@ -1,17 +1,17 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { NgbModal, NgbModule, NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
-import { IEvent } from '../../interface/interface';
-import { ManageEventComponent } from 'src/app/home/event/manage-event/manage-event.component';
-import { GoogleMapsModule, MapGeocoder } from '@angular/google-maps';
-import { CommonService } from '../../services/common.service';
+import { Component, Input, OnInit, inject } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { NgbModal, NgbModule, NgbOffcanvas } from "@ng-bootstrap/ng-bootstrap";
+import { IEvent } from "../../interface/interface";
+import { ManageEventComponent } from "src/app/home/event/manage-event/manage-event.component";
+import { GoogleMapsModule, MapGeocoder } from "@angular/google-maps";
+import { CommonService } from "../../services/common.service";
 
 @Component({
-  selector: 'app-modal',
+  selector: "app-modal",
   standalone: true,
   imports: [CommonModule, NgbModule, GoogleMapsModule],
-  templateUrl: './modal.component.html',
-  styleUrls: ['./modal.component.scss'],
+  templateUrl: "./modal.component.html",
+  styleUrls: ["./modal.component.scss"],
 })
 export class ModalComponent implements OnInit {
   public modalService = inject(NgbModal);
@@ -26,14 +26,14 @@ export class ModalComponent implements OnInit {
 
   @Input() eventDetails: IEvent = {
     id: 0,
-    title: '',
-    description: '',
-    image: '',
-    timing: { start: '', end: '' },
+    title: "",
+    description: "",
+    image: "",
+    timing: { start: "", end: "" },
     address: undefined,
   };
 
-  @Input() location: any = '';
+  @Input() location: any = "";
 
   ngOnInit(): void {
     this.getLocation();
@@ -43,9 +43,10 @@ export class ModalComponent implements OnInit {
 
   openEditForm() {
     const ref = this.offCanvasService.open(ManageEventComponent, {
-      position: 'end',
+      position: "end",
       animation: true,
       backdrop: true,
+      panelClass: "manage-event-component",
     });
     ref.componentInstance.id = this.eventDetails.id;
     // Close the modal view.
@@ -54,8 +55,10 @@ export class ModalComponent implements OnInit {
     ref.dismissed.subscribe({
       next: (response: any) => {
         const modalRef = this.modalService.open(ModalComponent, {
-          size: 'lg',
+          size: "lg",
           centered: true,
+          modalDialogClass: "custom-modal-dialog",
+          backdropClass: "custom-modal-backdrop",
         });
         modalRef.componentInstance.eventDetails = response || this.eventDetails;
       },
@@ -68,8 +71,10 @@ export class ModalComponent implements OnInit {
    */
   viewLocation(address: any) {
     const locationModalRef = this.modalService.open(ModalComponent, {
-      size: 'lg',
+      size: "lg",
       centered: true,
+      modalDialogClass: "custom-modal-dialog",
+      backdropClass: "custom-modal-backdrop",
     });
     locationModalRef.componentInstance.location = address;
   }
@@ -90,7 +95,7 @@ export class ModalComponent implements OnInit {
             };
             console.log(this.position);
           } else {
-            console.log('Not Found');
+            console.log("Not Found");
           }
         }
       );
