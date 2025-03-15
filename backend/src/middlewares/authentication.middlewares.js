@@ -14,7 +14,9 @@ export const isAuthenticated = catchAsync(async (req, res, next) => {
       accessToken,
       process.env.ACCESS_TOKEN_SECRET_KEY
     );
-    const user = await Users.findById(decoded._id);
+    const user = await Users.findById(decoded._id).select(
+      "-password -refreshToken"
+    );
     if (user) {
       req.user = user;
       return next();

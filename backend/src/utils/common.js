@@ -19,3 +19,13 @@ export const generateAccessAndRefreshToken = async (userId) => {
     throw new Error(error);
   }
 };
+
+/**
+ * Cookie options
+ */
+export const cookiesOptions = {
+  httpOnly: true,
+  secure: true,
+  secure: true,
+  sameSite: "Strict",
+};

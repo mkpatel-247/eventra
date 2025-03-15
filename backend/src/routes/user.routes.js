@@ -1,5 +1,10 @@
 import express from "express";
-import { login, logout, registerUser } from "../controllers/user.controller.js";
+import {
+  generateNewToken,
+  login,
+  logout,
+  registerUser,
+} from "../controllers/user.controller.js";
 import { validateMiddleware } from "../middlewares/field-validation.middlewares.js";
 import { validationSchemas } from "../utils/field-validators.js";
 import { isAuthenticated } from "../middlewares/authentication.middlewares.js";
@@ -13,5 +18,6 @@ router.post(
   registerUser
 );
 router.post("/logout", isAuthenticated, logout);
+router.get("/refresh-token", generateNewToken);
 
 export default router;

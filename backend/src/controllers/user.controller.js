@@ -1,7 +1,11 @@
 import Users from "../models/users.models.js";
 import { catchAsync } from "../utils/api-error.js";
-import { generateAccessAndRefreshToken } from "../utils/common.js";
+import {
+  cookiesOptions,
+  generateAccessAndRefreshToken,
+} from "../utils/common.js";
 import { sendResponse } from "../utils/response-handler.js";
+import jwt from "jsonwebtoken";
 
 /**
  * Login API controller
@@ -23,14 +27,10 @@ export const login = catchAsync(async (req, res, next) => {
     user?._id
   );
 
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
   // Store tokens in cookies
   res
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options);
+    .cookie("accessToken", accessToken, cookiesOptions)
+    .cookie("refreshToken", refreshToken, cookiesOptions);
   // Prepare object to send in response of successful login and token in response
   const data = {
     email: user?.email,
@@ -61,13 +61,42 @@ export const registerUser = catchAsync(async (req, res, next) => {
 export const logout = catchAsync(async (req, res, next) => {
   await Users.findByIdAndUpdate(req.user._id, { refreshToken: null });
 
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
-
-  res.clearCookie("accessToken", options);
-  res.clearCookie("refreshToken", options);
+  res.clearCookie("accessToken", cookiesOptions);
+  res.clearCookie("refreshToken", cookiesOptions);
 
   return sendResponse(res, 200, "User logout successfully.");
+});
+
+/**
+ * Generate new access & refresh token controller
+ */
+export const generateNewToken = catchAsync(async (req, res, next) => {
+  const { refreshToken } = req.cookies;
+  if (!refreshToken) {
+    return sendResponse(res, 401, "Unauthorized");
+  }
+
+  let decoded;
+  try {
+    decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_KEY);
+  } catch (error) {
+    return sendResponse(res, 403, "Invalid or expired refresh token");
+  }
+
+  // Check if user exists and refresh token is valid
+  const user = await Users.findOne({ _id: decoded._id, refreshToken });
+  if (!user) {
+    return sendResponse(res, 401, "Unauthorized");
+  }
+
+  const { accessToken, refreshToken: newRefreshToken } =
+    await generateAccessAndRefreshToken(user._id);
+
+  res
+    .cookie("accessToken", accessToken, cookiesOptions)
+    .cookie("refreshToken", newRefreshToken, cookiesOptions);
+  return sendResponse(res, 200, "Token refresh successfully.", {
+    accessToken: accessToken,
+    refreshToken: newRefreshToken,
+  });
 });
