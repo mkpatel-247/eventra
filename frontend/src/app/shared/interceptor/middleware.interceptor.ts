@@ -1,35 +1,91 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { getLocalStorage } from '../common/function';
-import { TOKEN } from '../constant/keys.constant';
+  HttpErrorResponse,
+} from "@angular/common/http";
+import { catchError, map, Observable, switchMap, throwError } from "rxjs";
+import { getLocalStorage, setLocalStorage } from "../common/function";
+import { REFRESH_TOKEN, TOKEN } from "../constant/keys.constant";
+import { AuthService } from "../services/auth.service";
 
 @Injectable()
 export class MiddlewareInterceptor implements HttpInterceptor {
-  constructor() {}
+  private isRefreshing: boolean = false;
+  private refreshTokenRequest: Observable<any> | null = null;
+
+  constructor(private authService: AuthService) {}
 
   intercept(
-    request: HttpRequest<unknown>,
+    request: HttpRequest<any>,
     next: HttpHandler
-  ): Observable<HttpEvent<unknown>> {
-    //Get token from localStorage.
+  ): Observable<HttpEvent<any>> {
+    // Get token from localStorage
     const authHeader = getLocalStorage(TOKEN);
 
     if (authHeader) {
-      /**
-       * Set token in header.
-       */
-      const cloneRequest = request.clone({
-        headers: request.headers.set('authorization', `${authHeader}`),
-      });
-      return next.handle(cloneRequest);
-    } else {
-      return next.handle(request);
+      request = this.addToken(request, authHeader);
     }
+
+    return next.handle(request).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          return this.handle401Error(request, next);
+        }
+        return throwError(() => new Error(error.message));
+      })
+    );
+  }
+
+  /**
+   * Adds the authorization token to the request headers.
+   * @param request - The HTTP request to which the token should be added.
+   * @param token - The token to add to the authorization header.
+   * @returns A cloned request with the added authorization header.
+   */
+  private addToken(request: HttpRequest<any>, token: string) {
+    return request.clone({
+      headers: request.headers.set("authorization", `${token}`),
+    });
+  }
+
+  /**
+   * Handle 401 errors by refreshing the access token and retrying the request.
+   * If the refresh token request fails, logout the user and redirect to login.
+   * @param request - The original request that resulted in the 401 error.
+   * @param next - The next handler in the interceptor chain.
+   * @returns An observable of the response to the retried request.
+   */
+  private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+    if (!this.isRefreshing) {
+      this.isRefreshing = true;
+      this.refreshTokenRequest = this.authService.updateRefreshToken().pipe(
+        switchMap(
+          (newTokens: { accessToken: string; refreshToken: string }) => {
+            this.isRefreshing = false;
+            this.refreshTokenRequest = null;
+
+            // Store new tokens
+            setLocalStorage(TOKEN, newTokens.accessToken);
+            setLocalStorage(REFRESH_TOKEN, newTokens.refreshToken);
+
+            return next.handle(this.addToken(request, newTokens.accessToken));
+          }
+        ),
+        catchError((err) => {
+          this.isRefreshing = false;
+          this.refreshTokenRequest = null;
+          this.authService.logout(); // Redirect to login if refresh fails
+          return throwError(
+            () => new Error("Session expired. Please log in again.")
+          );
+        })
+      );
+    }
+    return this.refreshTokenRequest
+      ? this.refreshTokenRequest
+      : throwError(() => new Error("Session expired. Please log in again."));
   }
 }

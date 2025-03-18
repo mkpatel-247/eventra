@@ -1,5 +1,6 @@
 export const TOKEN = "authToken";
 export const EVENT = "event";
+export const REFRESH_TOKEN = "refresh-token";
 
 export const TOAST = {
   TOAST_STATE: {
