@@ -33,6 +33,9 @@ export class HeaderComponent {
         localStorage.removeItem(TOKEN);
         this.router.navigateByUrl("/");
       },
+      error: (error: any) => {
+        console.error("Error :> ", error.message);
+      },
     });
   }
 
