@@ -69,14 +69,16 @@ export class LoginComponent implements OnInit {
       //Subscribe login() from service and fetch response.
       this.authService.login(value).subscribe({
         next: (response: any) => {
-          //Set Token & navigate to `/home` route.
-          const { accessToken } = response?.data;
-          setLocalStorage(TOKEN, accessToken);
-          this.toastService.showToast(
-            TOAST.TOAST_STATE.success,
-            "Login Successfully"
-          );
-          this.router.navigateByUrl("/home");
+          if (response.statusCode == 200 || response.statusCode == 201) {
+            //Set Token & navigate to `/home` route.
+            const { accessToken } = response?.data;
+            setLocalStorage(TOKEN, accessToken);
+            this.toastService.showToast(
+              TOAST.TOAST_STATE.success,
+              "Login Successfully"
+            );
+            this.router.navigateByUrl("/home");
+          }
         },
         error: (err: any) => {
           this.loginFailed = true;

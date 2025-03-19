@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import {
   LOGIN_API,
   LOGOUT_API,
+  REFRESH_TOKEN_API,
   REGISTER_USER_API,
 } from "../constant/api.constant";
 import { Observable } from "rxjs";
@@ -37,5 +38,13 @@ export class AuthService {
    */
   logout(): Observable<any> {
     return this.http.post(LOGOUT_API, {});
+  }
+
+  /**
+   * Makes a GET request to the refresh token api.
+   * @returns the response from the refresh token api.
+   */
+  updateRefreshToken(): Observable<any> {
+    return this.http.get(REFRESH_TOKEN_API);
   }
 }
