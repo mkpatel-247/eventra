@@ -10,13 +10,14 @@ import { catchError, map, Observable, switchMap, throwError } from "rxjs";
 import { getLocalStorage, setLocalStorage } from "../common/function";
 import { REFRESH_TOKEN, TOKEN } from "../constant/keys.constant";
 import { AuthService } from "../services/auth.service";
+import { Router } from "@angular/router";
 
 @Injectable()
 export class MiddlewareInterceptor implements HttpInterceptor {
   private isRefreshing: boolean = false;
   private refreshTokenRequest: Observable<any> | null = null;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   intercept(
     request: HttpRequest<any>,
@@ -31,7 +32,8 @@ export class MiddlewareInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
+        if (error.status === 401 && !this.isRefreshing) {
+          this.isRefreshing = true;
           return this.handle401Error(request, next);
         }
         return throwError(() => new Error(error.message));
@@ -47,7 +49,7 @@ export class MiddlewareInterceptor implements HttpInterceptor {
    */
   private addToken(request: HttpRequest<any>, token: string) {
     return request.clone({
-      headers: request.headers.set("authorization", `${token}`),
+      headers: request.headers.set("accessToken", `${token}`),
     });
   }
 
@@ -58,32 +60,31 @@ export class MiddlewareInterceptor implements HttpInterceptor {
    * @param next - The next handler in the interceptor chain.
    * @returns An observable of the response to the retried request.
    */
-  private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
-    if (!this.isRefreshing) {
-      this.isRefreshing = true;
-      this.refreshTokenRequest = this.authService.updateRefreshToken().pipe(
-        switchMap(
-          (newTokens: { accessToken: string; refreshToken: string }) => {
-            this.isRefreshing = false;
-            this.refreshTokenRequest = null;
+  private handle401Error(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    this.refreshTokenRequest = this.authService.updateRefreshToken().pipe(
+      switchMap((newTokens: { accessToken: string; refreshToken: string }) => {
+        this.refreshTokenRequest = null;
 
-            // Store new tokens
-            setLocalStorage(TOKEN, newTokens.accessToken);
-            setLocalStorage(REFRESH_TOKEN, newTokens.refreshToken);
+        // Store new tokens
+        setLocalStorage(TOKEN, newTokens.accessToken);
+        setLocalStorage(REFRESH_TOKEN, newTokens.refreshToken);
 
-            return next.handle(this.addToken(request, newTokens.accessToken));
-          }
-        ),
-        catchError((err) => {
-          this.isRefreshing = false;
-          this.refreshTokenRequest = null;
-          this.authService.logout(); // Redirect to login if refresh fails
-          return throwError(
-            () => new Error("Session expired. Please log in again.")
-          );
-        })
-      );
-    }
+        return next.handle(this.addToken(request, newTokens.accessToken));
+      }),
+      catchError((err) => {
+        // this.isRefreshing = false;
+        this.refreshTokenRequest = null;
+        localStorage.removeItem(TOKEN);
+        this.router.navigateByUrl("/");
+        this.authService.logout(); // Redirect to login if refresh fails
+        return throwError(
+          () => new Error("Session expired. Please log in again.")
+        );
+      })
+    );
     return this.refreshTokenRequest
       ? this.refreshTokenRequest
       : throwError(() => new Error("Session expired. Please log in again."));

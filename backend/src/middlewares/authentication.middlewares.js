@@ -4,7 +4,7 @@ import { sendResponse } from "../utils/response-handler.js";
 import jwt from "jsonwebtoken";
 
 export const isAuthenticated = catchAsync(async (req, res, next) => {
-  const { accessToken } = req.cookies;
+  const { accessToken } = req.headers;
 
   if (!accessToken) {
     return sendResponse(res, 401, "Unauthorized");
