@@ -1,9 +1,11 @@
 import express from "express";
 import { isAuthenticated } from "../middlewares/authentication.middlewares.js";
+import { addEvent } from "../controllers/event.controller.js";
 
 const router = express.Router();
 
 /** Add/Edit event details. */
+router.post("/add", isAuthenticated, addEvent);
 router.post("/manage-event/:id?", isAuthenticated);
 /** Get a list of all events. */
 router.get("/list", isAuthenticated, (req, res, next) => {
