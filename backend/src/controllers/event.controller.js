@@ -21,3 +21,9 @@ export const addEvent = catchAsync(async (req, res, next) => {
   });
   return sendResponse(res, 200, "Event added successfully.");
 });
+
+export const getEvents = catchAsync(async (req, res, next) => {
+  const events = await Events.find();
+  console.log("events :>>", events);
+  return sendResponse(res, 200, "Get event list.", events);
+});

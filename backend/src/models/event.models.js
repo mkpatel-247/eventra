@@ -39,7 +39,7 @@ const eventSchema = new mongoose.Schema(
             required: [true, "Must provide event description"],
         },
         eventDate: {
-            type: [eventDateSchema],
+            type: eventDateSchema,
         },
         address: {
             type: [addressSchema],
