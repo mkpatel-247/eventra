@@ -1,15 +1,15 @@
 export interface IEvent {
-  id: number;
+  _id: number;
   title: string;
   description: string;
   image: string;
-  timing: ITiming;
+  eventDate: ITiming;
   address: any;
 }
 
 interface ITiming {
-  start: string;
-  end: string;
+  startDate: string;
+  endDate: string;
 }
 
 export interface IToastInfo {

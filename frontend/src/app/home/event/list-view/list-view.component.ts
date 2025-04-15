@@ -19,11 +19,12 @@ import { EVENT } from "src/app/shared/constant/keys.constant";
 import { ModalComponent } from "src/app/shared/components/modal/modal.component";
 import { CommonService } from "src/app/shared/services/common.service";
 import { Subscription } from "rxjs";
+import { EventService } from "src/app/shared/services/event.service";
 
 @Component({
   selector: "app-list-view",
   standalone: true,
-  imports: [CommonModule, ManageEventComponent],
+  imports: [CommonModule],
   templateUrl: "./list-view.component.html",
   styleUrls: ["./list-view.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
