@@ -49,11 +49,10 @@ export class ManageEventComponent implements OnInit {
     public offcanvas: NgbOffcanvas,
     public modal: NgbModal,
     private common: CommonService,
-    private loggerService: LoggerService
+    private eventService: EventService
   ) {}
 
   ngOnInit(): void {
-    this.loggerService.error(['Add Event modal open']).subscribe();
     this.initializeEventForm();
 
     if (this.id) {
@@ -124,12 +123,24 @@ export class ManageEventComponent implements OnInit {
         value.id = this.generateUniqueEventId(); //Generate unique ID.
         this.allEvent.push(value); //Add new event.
       }
-      setLocalStorage(EVENT, this.allEvent); //Set into localStorage.
-      this.common.updateEvent$.next(this.allEvent); //Emit subject
-      //Make Form variable empty.
-      this.profileImage = '';
+      const eventData = {
+        title: value.title,
+        description: value.description,
+        startDate: value.timing.start,
+        endDate: value.timing.end,
+        image: value.image,
+      };
+      this.eventService.addEvent(eventData).subscribe({
+        next: (res: any) => {
+          // Add toast message and update the event in list or calendar.
+          this.common.updateEvent$.next(this.allEvent); //Emit subject
+        },
+      });
+      // setLocalStorage(EVENT, this.allEvent); //Set into localStorage.
+      // Make Form variable empty.
+      this.profileImage = "";
       this.eventForm.reset();
-      //Close component.
+      // Close component.
       this.id ? this.offcanvas.dismiss(value) : this.modal.dismissAll();
     } else {
       this.isSubmitted = true;
@@ -141,8 +152,7 @@ export class ManageEventComponent implements OnInit {
    * Generate Unique Event ID.
    * @returns Unique ID
    */
-  generateUniqueEventId() {
+  private generateUniqueEventId() {
     return this.allEvent.length ? this.allEvent.length + 1 : 1;
   }
-
 }

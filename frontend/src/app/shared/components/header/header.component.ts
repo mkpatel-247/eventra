@@ -9,7 +9,7 @@ import { CommonService } from "../../services/common.service";
 @Component({
   selector: "app-header",
   standalone: true,
-  imports: [CommonModule, BreadcrumbComponent],
+  imports: [CommonModule],
   templateUrl: "./header.component.html",
   styleUrls: ["./header.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
