@@ -37,7 +37,7 @@ export class ManageEventComponent implements OnInit {
   allEvent: any = "";
   isSubmitted: boolean = false;
 
-  @Input() id = 0;
+  @Input() id: string = "";
   @Input() editObject: any = "";
   //Date value from calendarView.
   @Input() date: any = "";
@@ -56,7 +56,8 @@ export class ManageEventComponent implements OnInit {
     this.initializeEventForm();
 
     if (this.id) {
-      this.editObject = findObjectNIndex(this.id);
+      // this.editObject = findObjectNIndex(this.id);
+      this.getEventById(this?.id);
       this.profileImage = this.editObject.object.image;
       this.eventForm.patchValue(this.editObject.object);
     }
@@ -87,7 +88,7 @@ export class ManageEventComponent implements OnInit {
         city: new FormControl("", [Validators.required]),
         area: new FormControl("", [Validators.required]),
       }),
-      image: new FormControl(null, [Validators.required]),
+      image: new FormControl(null),
     });
   }
 
@@ -128,7 +129,7 @@ export class ManageEventComponent implements OnInit {
         description: value.description,
         startDate: value.timing.start,
         endDate: value.timing.end,
-        image: value.image,
+        // image: value.image,
       };
       this.eventService.addEvent(eventData).subscribe({
         next: (res: any) => {
@@ -154,5 +155,22 @@ export class ManageEventComponent implements OnInit {
    */
   private generateUniqueEventId() {
     return this.allEvent.length ? this.allEvent.length + 1 : 1;
+  }
+
+  /**
+   * Fetches the event by ID and populates the form with the event data.
+   * @param id The ID of the event to be fetched.
+   */
+  private getEventById(id: string) {
+    this.eventService.getSpecificEvent(id).subscribe({
+      next: (res: any) => {
+        const { title, description, eventDate } = res?.data;
+        const timing = {
+          start: eventDate?.startDate,
+          end: eventDate?.endDate,
+        };
+        this.eventForm.patchValue({ title, description, timing });
+      },
+    });
   }
 }
