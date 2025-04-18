@@ -25,11 +25,11 @@ export class ModalComponent implements OnInit {
   position = { lat: 37.9, lng: -76.8 };
 
   @Input() eventDetails: IEvent = {
-    id: 0,
+    _id: 0,
     title: "",
     description: "",
     image: "",
-    timing: { start: "", end: "" },
+    eventDate: { startDate: "", endDate: "" },
     address: undefined,
   };
 
@@ -48,7 +48,7 @@ export class ModalComponent implements OnInit {
       backdrop: true,
       panelClass: "manage-event-component",
     });
-    ref.componentInstance.id = this.eventDetails.id;
+    ref.componentInstance.id = this.eventDetails._id;
     // Close the modal view.
     this.modalService.dismissAll();
     // When offcanvas is dismissed then subscribe and get the value.

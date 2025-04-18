@@ -49,7 +49,7 @@ export class MiddlewareInterceptor implements HttpInterceptor {
    */
   private addToken(request: HttpRequest<any>, token: string) {
     return request.clone({
-      headers: request.headers.set("accessToken", `${token}`),
+      headers: request.headers.set("authorization", `Bearer ${token}`),
     });
   }
 

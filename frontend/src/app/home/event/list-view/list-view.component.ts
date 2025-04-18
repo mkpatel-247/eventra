@@ -19,11 +19,12 @@ import { EVENT } from "src/app/shared/constant/keys.constant";
 import { ModalComponent } from "src/app/shared/components/modal/modal.component";
 import { CommonService } from "src/app/shared/services/common.service";
 import { Subscription } from "rxjs";
+import { EventService } from "src/app/shared/services/event.service";
 
 @Component({
   selector: "app-list-view",
   standalone: true,
-  imports: [CommonModule, ManageEventComponent],
+  imports: [CommonModule],
   templateUrl: "./list-view.component.html",
   styleUrls: ["./list-view.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,17 +35,21 @@ export class ListViewComponent implements OnInit, OnDestroy {
   //Store all subscription.
   subscribed: Subscription[] = [];
 
-  constructor(private cdr: ChangeDetectorRef, public common: CommonService) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    public common: CommonService,
+    private eventService: EventService
+  ) {}
 
   ngOnInit(): void {
     //Get event list from local storage.
     const sub = this.common.updateEvent$.subscribe({
       next: () => {
-        this.eventList = getLocalStorage(EVENT);
-        this.cdr.detectChanges();
+        this.getEventList();
       },
     });
     this.subscribed.push(sub);
+    this.getEventList();
   }
 
   /**
@@ -91,6 +96,16 @@ export class ListViewComponent implements OnInit, OnDestroy {
     allEvent.splice(eventIndex, 1);
     this.eventList = allEvent;
     setLocalStorage(EVENT, allEvent);
+  }
+
+  getEventList() {
+    const sub = this.eventService.fetchEvents().subscribe({
+      next: (res: any) => {
+        this.eventList = res?.data?.list;
+        this.cdr.markForCheck();
+      },
+    });
+    this.subscribed.push(sub);
   }
 
   ngOnDestroy(): void {
