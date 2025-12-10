@@ -2,6 +2,7 @@ import express from "express";
 import connectDB from "./src/config/db-connect.js";
 import userRoutes from "./src/routes/user.routes.js";
 import eventRoutes from "./src/routes/event.routes.js";
+import bookingRoutes from "./src/routes/booking.routes.js";
 import dotenv from "dotenv";
 import { sendResponse } from "./src/utils/response-handler.js";
 import cors from "cors";
@@ -31,6 +32,7 @@ app.use((req, _, next) => {
 
 app.use("/user", userRoutes);
 app.use("/event", eventRoutes);
+app.use("/booking", bookingRoutes);
 
 app.listen(process.env.PORT || PORT, () => {
   console.log(
