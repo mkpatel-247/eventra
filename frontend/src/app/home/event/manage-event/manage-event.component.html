@@ -33,6 +33,32 @@
                     Event description is required.
                 </span>
             </div>
+            <!-- Category & Capacity -->
+            <div class="col-md-6">
+                <label for="category" class="form-label fw-bold">Category</label>
+                <select class="form-select" formControlName="category">
+                    <option value="Music">Music</option>
+                    <option value="Tech">Tech</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Workshop">Workshop</option>
+                    <option value="Social">Social</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="capacity" class="form-label fw-bold">Capacity</label>
+                <input type="number" class="form-control" formControlName="capacity" min="1">
+            </div>
+            <!-- Price & Tags -->
+            <div class="col-md-6">
+                <label for="price" class="form-label fw-bold">Price ($)</label>
+                <input type="number" class="form-control" formControlName="price" min="0">
+            </div>
+            <div class="col-md-6">
+                <label for="tags" class="form-label fw-bold">Tags</label>
+                <input type="text" class="form-control" formControlName="tags"
+                    placeholder="Comma separated (e.g. fun, outdoor)">
+            </div>
             <!-- Timing -->
             <fieldset class="border pb-2 px-2 rounded-3"
                 [ngClass]="{'border-danger': fc['timing'].hasError('dateRangeInvalid')}">
@@ -95,6 +121,18 @@
                                 id="inputAddress2" placeholder="Enter event area" formControlName="area">
                             <span
                                 *ngIf="(fc['address'].get('area')?.hasError('required') && fc['address'].get('area')?.touched) || (fc['address'].get('area')?.invalid && isSubmitted)"
+                                class="text-danger">
+                                *required.
+                            </span>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="fullAddress" class="form-label">Full Address</label>
+                            <textarea class="form-control"
+                                [ngClass]="{'border-danger': (fc['address'].get('fullAddress')?.hasError('required') && fc['address'].get('fullAddress')?.touched) || (fc['address'].get('fullAddress')?.invalid && isSubmitted)}"
+                                id="fullAddress" placeholder="Enter complete address" rows="2"
+                                formControlName="fullAddress"></textarea>
+                            <span
+                                *ngIf="(fc['address'].get('fullAddress')?.hasError('required') && fc['address'].get('fullAddress')?.touched) || (fc['address'].get('fullAddress')?.invalid && isSubmitted)"
                                 class="text-danger">
                                 *required.
                             </span>

@@ -41,19 +41,40 @@
                 </div>
             </div>
         </div>
-        <div class="card-footer d-flex justify-content-lg-center">
-            <h6 class="mb-0">
-                <i class="bi bi-calendar3"></i>
-                {{ eventDetails.eventDate.startDate|date:'MMM d, y, h:mm' }}
-                <i class="bi bi-arrow-right"></i>
-                {{eventDetails.eventDate.endDate|date:'MMM d, y, h:mm'}}
-            </h6>
-        </div>
     </ng-container>
     <ng-template #maps>
-        <!-- Maps -->
         <google-map class="mx-auto py-2" height="400" width="780" [zoom]="10" [center]="position">
             <map-marker [position]="position"></map-marker>
         </google-map>
     </ng-template>
-</div>
+
+    <!-- Booking Form UI -->
+    <ng-container *ngIf="isBookingMode && !location">
+        <div class="card-body">
+            <h5 class="card-title">Book Function</h5>
+            <div class="mb-3">
+                <label class="form-label">Number of Guests</label>
+                <input type="number" class="form-control" [(ngModel)]="guestCount" min="1" max="10">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Special Requests</label>
+                <textarea class="form-control" [(ngModel)]="specialRequests" rows="2"></textarea>
+            </div>
+            <div class="d-grid gap-2">
+                <button class="btn theme-color-button" (click)="confirmBooking()">Confirm Booking</button>
+                <button class="btn btn-outline-secondary" (click)="isBookingMode = false">Cancel</button>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- Book Now Button (Only show if NOT in booking mode and NOT viewing map) -->
+    <div class="card-footer d-flex justify-content-between align-items-center" *ngIf="!isBookingMode && !location">
+        <h6 class="mb-0">
+            <i class="bi bi-calendar3"></i>
+            {{ eventDetails.eventDate.startDate|date:'MMM d, h:mm a' }}
+        </h6>
+
+        <button class="btn theme-color-button" (click)="isBookingMode = true">
+            Book Now
+        </button>
+    </div>

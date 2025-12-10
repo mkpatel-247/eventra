@@ -6,7 +6,7 @@ import { EVENT_API_URL } from "../constant/api.constant";
   providedIn: "root",
 })
 export class EventService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /**
    * Sends a POST request to add a new event.
@@ -41,5 +41,15 @@ export class EventService {
    */
   fetchEvents() {
     return this.http.get(EVENT_API_URL.GET_EVENTS);
+  }
+
+  /**
+   * Sends a PUT request to update an event.
+   * @param eventId - The id of the event to be updated.
+   * @param data - The updated event data.
+   * @returns An observable of the HTTP response.
+   */
+  updateEvent(eventId: string, data: any) {
+    return this.http.put(EVENT_API_URL.GET_SPECIFIC_EVENT + eventId, data);
   }
 }

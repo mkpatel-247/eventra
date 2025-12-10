@@ -41,6 +41,22 @@ export const homeRoutes: Routes = [
           },
         ],
       },
+      {
+        path: 'my-bookings',
+        loadComponent: () =>
+          import('./my-bookings/my-bookings.component').then(
+            (m) => m.MyBookingsComponent
+          ),
+        data: [
+          {
+            pageTitle: 'My Bookings',
+            linkList: [
+              { label: 'Home', link: '/home' },
+              { label: 'My Bookings', link: '/home/my-bookings' },
+            ],
+          },
+        ],
+      },
     ],
   },
   {
