@@ -13,7 +13,10 @@ dotenv.config(); //.env file configuration.
 const PORT = 3000;
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "*", // Allow all origins for initial scaling/testing. Change to specific domains in production.
+  credentials: true
+}));
 app.use(express.static("public"));
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
@@ -31,8 +34,7 @@ app.use("/event", eventRoutes);
 
 app.listen(process.env.PORT || PORT, () => {
   console.log(
-    `Server is running on port ${
-      process.env.PORT || PORT
+    `Server is running on port ${process.env.PORT || PORT
     } \nPress ctrl + click on http://localhost:${process.env.PORT || PORT}/`
   );
   console.log("-----------------------------------");

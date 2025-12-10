@@ -58,7 +58,7 @@ export class ManageEventComponent implements OnInit {
     if (this.id) {
       // this.editObject = findObjectNIndex(this.id);
       this.getEventById(this?.id);
-      this.profileImage = this.editObject.object.image;
+      // this.profileImage = this.editObject.object.image;
       this.eventForm.patchValue(this.editObject.object);
     }
     if (this.date) {
@@ -116,7 +116,7 @@ export class ManageEventComponent implements OnInit {
    */
   onSubmitEventForm() {
     const value = this.eventForm.value;
-    value.image = this.profileImage;
+    // value.image = this.profileImage;
     if (this.eventForm.valid) {
       if (this.id) {
         this.allEvent[this.editObject.index] = value; //Update edited event.
@@ -139,7 +139,7 @@ export class ManageEventComponent implements OnInit {
       });
       // setLocalStorage(EVENT, this.allEvent); //Set into localStorage.
       // Make Form variable empty.
-      this.profileImage = "";
+      // this.profileImage = "";
       this.eventForm.reset();
       // Close component.
       this.id ? this.offcanvas.dismiss(value) : this.modal.dismissAll();
