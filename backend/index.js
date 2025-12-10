@@ -22,7 +22,7 @@ app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(cookieParser());
 
-connectDB();
+await connectDB();
 
 app.use((req, _, next) => {
   console.log("Request URL:", req.url);
