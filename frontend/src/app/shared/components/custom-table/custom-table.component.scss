@@ -1,0 +1,108 @@
+.custom-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* Desktop Table Layout */
+.table-view {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    border: 1px solid #dee2e6;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.table-row:hover {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-cell {
+    word-break: break-word;
+}
+
+.actions-cell {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.table-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+}
+
+/* Mobile Card Layout */
+@media (max-width: 768px) {
+    .table-header {
+        display: none;
+        /* Hide header on mobile */
+    }
+
+    .table-row {
+        display: block;
+        margin-bottom: 1rem;
+        padding: 1.5rem;
+    }
+
+    .table-cell {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 0.5rem;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .table-cell:last-child {
+        border-bottom: none;
+    }
+
+    /* Add label before value on mobile */
+    .table-cell::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #6c757d;
+    }
+
+    .actions-cell {
+        display: flex;
+        justify-content: flex-start;
+        padding-top: 1rem;
+        border-top: 2px solid #dee2e6;
+        margin-top: 0.5rem;
+    }
+
+    .actions-cell::before {
+        display: none;
+        /* Hide "Actions" label */
+    }
+}
+
+/* Loading and Empty States */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
