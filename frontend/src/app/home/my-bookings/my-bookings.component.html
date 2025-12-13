@@ -1,0 +1,10 @@
+<div class="card">
+    <div class="card-header bg-white">
+        <h5 class="mb-0">My Bookings</h5>
+    </div>
+    <div class="card-body">
+        <app-custom-table [columns]="columns" [data]="bookings" [loading]="isLoading" [actions]="actions"
+            emptyMessage="You haven't booked any events yet.">
+        </app-custom-table>
+    </div>
+</div>

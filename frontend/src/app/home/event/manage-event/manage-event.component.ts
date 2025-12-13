@@ -50,7 +50,7 @@ export class ManageEventComponent implements OnInit {
     public modal: NgbModal,
     private common: CommonService,
     private eventService: EventService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initializeEventForm();
@@ -58,7 +58,7 @@ export class ManageEventComponent implements OnInit {
     if (this.id) {
       // this.editObject = findObjectNIndex(this.id);
       this.getEventById(this?.id);
-      this.profileImage = this.editObject.object.image;
+      // this.profileImage = this.editObject.object.image;
       this.eventForm.patchValue(this.editObject.object);
     }
     if (this.date) {
@@ -77,6 +77,10 @@ export class ManageEventComponent implements OnInit {
       id: new FormControl(""), //Hidden field
       title: new FormControl("", [Validators.required]),
       description: new FormControl("", [Validators.required]),
+      category: new FormControl("Other", [Validators.required]),
+      price: new FormControl(0, [Validators.required, Validators.min(0)]),
+      capacity: new FormControl(0, [Validators.required, Validators.min(1)]),
+      tags: new FormControl(""), // Comma separated string for UI
       timing: new FormGroup(
         {
           start: new FormControl("", [Validators.required]),
@@ -87,6 +91,7 @@ export class ManageEventComponent implements OnInit {
       address: new FormGroup({
         city: new FormControl("", [Validators.required]),
         area: new FormControl("", [Validators.required]),
+        fullAddress: new FormControl("", [Validators.required]),
       }),
       image: new FormControl(null),
     });
@@ -116,33 +121,35 @@ export class ManageEventComponent implements OnInit {
    */
   onSubmitEventForm() {
     const value = this.eventForm.value;
-    value.image = this.profileImage;
     if (this.eventForm.valid) {
-      if (this.id) {
-        this.allEvent[this.editObject.index] = value; //Update edited event.
-      } else {
-        value.id = this.generateUniqueEventId(); //Generate unique ID.
-        this.allEvent.push(value); //Add new event.
-      }
       const eventData = {
         title: value.title,
         description: value.description,
         startDate: value.timing.start,
         endDate: value.timing.end,
-        // image: value.image,
+        category: value.category,
+        price: value.price,
+        capacity: value.capacity,
+        tags: value.tags ? value.tags.split(",").map((t: string) => t.trim()) : [],
+        address: [value.address], // Backend expects array of address objects
       };
-      this.eventService.addEvent(eventData).subscribe({
+
+      // Determine if this is an edit or create operation
+      const apiCall = this.id
+        ? this.eventService.updateEvent(this.id, eventData)
+        : this.eventService.addEvent(eventData);
+
+      apiCall.subscribe({
         next: (res: any) => {
           // Add toast message and update the event in list or calendar.
           this.common.updateEvent$.next(this.allEvent); //Emit subject
+          this.eventForm.reset();
+          this.id ? this.offcanvas.dismiss(value) : this.modal.dismissAll();
+        },
+        error: (err) => {
+          console.error("Event operation failed", err);
         },
       });
-      // setLocalStorage(EVENT, this.allEvent); //Set into localStorage.
-      // Make Form variable empty.
-      this.profileImage = "";
-      this.eventForm.reset();
-      // Close component.
-      this.id ? this.offcanvas.dismiss(value) : this.modal.dismissAll();
     } else {
       this.isSubmitted = true;
     }
@@ -164,12 +171,25 @@ export class ManageEventComponent implements OnInit {
   private getEventById(id: string) {
     this.eventService.getSpecificEvent(id).subscribe({
       next: (res: any) => {
-        const { title, description, eventDate } = res?.data;
+        const event = res?.data;
         const timing = {
-          start: eventDate?.startDate,
-          end: eventDate?.endDate,
+          start: event?.eventDate?.startDate,
+          end: event?.eventDate?.endDate,
         };
-        this.eventForm.patchValue({ title, description, timing });
+        const address = event?.address?.[0] || {};
+        const tagsString = event?.tags?.join(", ") || "";
+
+        this.eventForm.patchValue({
+          title: event?.title,
+          description: event?.description,
+          timing,
+          capacity: event?.capacity,
+          category: event?.category,
+          price: event?.price,
+          tags: tagsString,
+          address,
+        });
+        this.cdr.markForCheck();
       },
     });
   }

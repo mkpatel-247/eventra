@@ -5,17 +5,25 @@ import { IEvent } from "../../interface/interface";
 import { ManageEventComponent } from "src/app/home/event/manage-event/manage-event.component";
 import { GoogleMapsModule, MapGeocoder } from "@angular/google-maps";
 import { CommonService } from "../../services/common.service";
+import { BookingService } from "../../services/booking.service";
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: "app-modal",
   standalone: true,
-  imports: [CommonModule, NgbModule, GoogleMapsModule],
+  imports: [CommonModule, NgbModule, GoogleMapsModule, FormsModule],
   templateUrl: "./modal.component.html",
   styleUrls: ["./modal.component.scss"],
 })
 export class ModalComponent implements OnInit {
   public modalService = inject(NgbModal);
   private offCanvasService = inject(NgbOffcanvas);
+  private bookingService = inject(BookingService);
+
+  isBookingMode = false;
+  guestCount = 1;
+  ticketType = "General";
+  specialRequests = "";
   /**
    * Google Maps Api.
    */
@@ -39,7 +47,7 @@ export class ModalComponent implements OnInit {
     this.getLocation();
   }
 
-  constructor(public common: CommonService) {}
+  constructor(public common: CommonService) { }
 
   openEditForm() {
     const ref = this.offCanvasService.open(ManageEventComponent, {
@@ -100,5 +108,27 @@ export class ModalComponent implements OnInit {
         }
       );
     }
+  }
+
+  confirmBooking() {
+    const bookingData = {
+      eventId: this.eventDetails._id,
+      guestCount: this.guestCount,
+      ticketType: this.ticketType,
+      specialRequests: this.specialRequests,
+      guestDetails: [],
+    };
+    console.log(bookingData);
+
+
+    this.bookingService.bookEvent(bookingData).subscribe({
+      next: (res) => {
+        alert("Booking Successful!");
+        this.modalService.dismissAll();
+      },
+      error: (err) => {
+        alert("Booking Failed: " + (err.error?.message || err.message));
+      },
+    });
   }
 }

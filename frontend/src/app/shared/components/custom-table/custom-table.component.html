@@ -1,0 +1,60 @@
+<div class="custom-table-wrapper">
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && data.length === 0" class="text-center py-5">
+        <p class="text-muted">{{ emptyMessage }}</p>
+    </div>
+
+    <!-- Desktop Table View -->
+    <div *ngIf="!loading && data.length > 0" class="table-view">
+        <!-- Header -->
+        <div class="table-header">
+            <div *ngFor="let col of columns" class="table-cell" [style.width]="col.width">
+                {{ col.label }}
+            </div>
+            <div *ngIf="actions.length > 0" class="table-cell actions-header">Actions</div>
+        </div>
+
+        <!-- Body -->
+        <div *ngFor="let row of data" class="table-row">
+            <div *ngFor="let col of columns" class="table-cell" [attr.data-label]="col.label">
+                <!-- Text Type -->
+                <ng-container *ngIf="!col.type || col.type === 'text'">
+                    {{ getNestedValue(row, col.key) || '-' }}
+                </ng-container>
+
+                <!-- Date Type -->
+                <ng-container *ngIf="col.type === 'date'">
+                    {{ getNestedValue(row, col.key) | date:'MMM d, y, h:mm a' }}
+                </ng-container>
+
+                <!-- Badge Type -->
+                <ng-container *ngIf="col.type === 'badge'">
+                    <span class="badge" [ngClass]="getBadgeClass(getNestedValue(row, col.key))">
+                        {{ getNestedValue(row, col.key) }}
+                    </span>
+                </ng-container>
+
+                <!-- Image Type -->
+                <ng-container *ngIf="col.type === 'image'">
+                    <img [src]="getNestedValue(row, col.key)" class="table-image" alt="Image">
+                </ng-container>
+            </div>
+
+            <!-- Actions -->
+            <div *ngIf="actions.length > 0" class="table-cell actions-cell" data-label="Actions">
+                <button *ngFor="let action of actions" [hidden]="!isActionVisible(action, row)" class="btn btn-sm me-1"
+                    [ngClass]="action.cssClass || 'btn-outline-primary'" (click)="action.callback(row)">
+                    <i *ngIf="action.icon" [class]="'bi ' + action.icon"></i>
+                    {{ action.label }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

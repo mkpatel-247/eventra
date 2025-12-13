@@ -5,6 +5,7 @@ import {
   deleteEvents,
   getEvents,
   getSpecificEvents,
+  updateEvent,
 } from "../controllers/event.controller.js";
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router
   .route("/manage-event/:id?")
   .post(isAuthenticated, addEvent)
   .get(isAuthenticated, getSpecificEvents)
+  .put(isAuthenticated, updateEvent)
   .delete(isAuthenticated, deleteEvents);
 
 /** Get details of specific event. */
