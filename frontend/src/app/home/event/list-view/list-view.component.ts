@@ -20,11 +20,16 @@ import { ModalComponent } from "src/app/shared/components/modal/modal.component"
 import { CommonService } from "src/app/shared/services/common.service";
 import { Subscription } from "rxjs";
 import { EventService } from "src/app/shared/services/event.service";
+import {
+  CustomTableComponent,
+  TableColumn,
+  TableAction,
+} from "src/app/shared/components/custom-table/custom-table.component";
 
 @Component({
   selector: "app-list-view",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CustomTableComponent],
   templateUrl: "./list-view.component.html",
   styleUrls: ["./list-view.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,14 +37,44 @@ import { EventService } from "src/app/shared/services/event.service";
 export class ListViewComponent implements OnInit, OnDestroy {
   eventList: IEvent[] = [];
   private modalService = inject(NgbModal);
-  //Store all subscription.
   subscribed: Subscription[] = [];
+
+  // Table configuration
+  columns: TableColumn[] = [
+    { key: "image", label: "Image", type: "image" },
+    { key: "title", label: "Title", type: "text" },
+    { key: "description", label: "Description", type: "text" },
+    { key: "eventDate.startDate", label: "Start Date", type: "date" },
+    { key: "eventDate.endDate", label: "End Date", type: "date" },
+    { key: "category", label: "Category", type: "badge" },
+  ];
+
+  actions: TableAction[] = [
+    {
+      label: "",
+      icon: "bi-geo-alt-fill",
+      cssClass: "btn-link",
+      callback: (row) => this.viewLocation(row.address),
+    },
+    {
+      label: "",
+      icon: "bi-info-circle",
+      cssClass: "btn-outline-info",
+      callback: (row) => this.viewEventDetails(row),
+    },
+    {
+      label: "",
+      icon: "bi-trash",
+      cssClass: "btn-outline-danger",
+      callback: (row) => this.deleteEvent(row._id),
+    },
+  ];
 
   constructor(
     private cdr: ChangeDetectorRef,
     public common: CommonService,
     private eventService: EventService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     //Get event list from local storage.
