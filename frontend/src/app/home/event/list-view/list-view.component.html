@@ -5,49 +5,7 @@
         Add Event
     </button>
 </div>
-<div class="table-responsive">
 
-    <table class="table table text-center">
-        <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Image</th>
-                <th scope="col">Title</th>
-                <th scope="col">Description</th>
-                <th scope="col">Start Date</th>
-                <th scope="col">End Date</th>
-                <th scope="col">Address</th>
-                <th scope="col">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <ng-container *ngFor="let item of eventList; index as i">
-                <tr>
-
-                    <th scope="row">{{ i + 1 }}</th>
-                    <td>
-                        <img src="{{ item.image }}" class="profile-image" />
-                    </td>
-                    <td>{{ item.title.length > 20 ? item.title.substring(0, 21)+'...' : item.title }}</td>
-                    <td>{{ item.description.length > 30 ? item.description.substring(0, 31)+'...' : item.description }}
-                    </td>
-                    <td>{{ item.eventDate.startDate | date : 'short' }}</td>
-                    <td>{{ item.eventDate.endDate | date : 'short'}}</td>
-                    <td>
-                        <button class="btn btn-link" (click)="viewLocation(item.address)">
-                            <i class="bi bi-geo-alt-fill"></i>
-                        </button>
-                    </td>
-                    <td>
-                        <button class="btn btn-outline-info me-2" (click)="viewEventDetails(item)">
-                            <i class="bi bi-info-circle"></i>
-                        </button>
-                        <button class="btn btn-outline-danger" (click)="deleteEvent(item._id)">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            </ng-container>
-        </tbody>
-    </table>
-</div>
+<app-custom-table [columns]="columns" [data]="eventList" [loading]="false" [actions]="actions"
+    emptyMessage="No events found. Click 'Add Event' to create one.">
+</app-custom-table>
