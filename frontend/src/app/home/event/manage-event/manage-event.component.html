@@ -141,25 +141,6 @@
                     </div>
                 </div>
             </fieldset>
-            <!-- Image -->
-            <div class="col-md-12">
-                <label for="formFile" class="form-label fw-bold">Image</label>
-                <input class="form-control"
-                    [ngClass]="{'border-danger': (fc['image'].hasError('required') && fc['image'].touched) || (isSubmitted && fc['image'].invalid)}"
-                    type="file" accept="image/png, image/jpeg" id="formFile" (change)="onFileChange($event)"
-                    formControlName="image">
-                <span
-                    *ngIf="(fc['image'].hasError('required') && fc['image'].touched) || (isSubmitted && fc['image'].invalid)"
-                    class="text-danger">
-                    *required.
-                </span>
-
-            </div>
-            <!-- Uploaded Image -->
-            <div class="col-md-12" *ngIf="profileImage">
-                <img [src]="profileImage" class="profile-image me-2" alt="">
-                <label for="selectedProfileImage">Selected Image</label>
-            </div>
             <!-- Button -->
             <div class="text-center d-md-flex justify-content-md-center mt-3">
                 <button type="submit" class="btn {{ id ? 'btn-outline-warning': 'theme-color-button'}}">

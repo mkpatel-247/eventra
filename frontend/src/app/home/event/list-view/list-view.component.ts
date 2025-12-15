@@ -10,12 +10,6 @@ import { CommonModule } from "@angular/common";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ManageEventComponent } from "../manage-event/manage-event.component";
 import { IEvent } from "src/app/shared/interface/interface";
-import {
-  findObjectNIndex,
-  getLocalStorage,
-  setLocalStorage,
-} from "src/app/shared/common/function";
-import { EVENT } from "src/app/shared/constant/keys.constant";
 import { ModalComponent } from "src/app/shared/components/modal/modal.component";
 import { CommonService } from "src/app/shared/services/common.service";
 import { Subscription } from "rxjs";
@@ -122,15 +116,22 @@ export class ListViewComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Delete event.
+   * Delete event via backend API.
    * @param eventId record id that need to delete.
    */
-  deleteEvent(eventId: number) {
-    const allEvent = getLocalStorage(EVENT);
-    const eventIndex = findObjectNIndex(eventId).index;
-    allEvent.splice(eventIndex, 1);
-    this.eventList = allEvent;
-    setLocalStorage(EVENT, allEvent);
+  deleteEvent(eventId: string) {
+    if (confirm("Are you sure you want to delete this event?")) {
+      const sub = this.eventService.deleteEvent(eventId).subscribe({
+        next: () => {
+          alert("Event deleted successfully");
+          this.getEventList(); // Refresh list
+        },
+        error: (err) => {
+          alert("Error deleting event: " + (err.error?.message || "Unknown error"));
+        },
+      });
+      this.subscribed.push(sub);
+    }
   }
 
   getEventList() {

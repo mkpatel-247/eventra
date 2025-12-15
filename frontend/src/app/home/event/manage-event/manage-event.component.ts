@@ -14,11 +14,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import {
-  findObjectNIndex,
-  getLocalStorage,
-} from "src/app/shared/common/function";
-import { EVENT } from "src/app/shared/constant/keys.constant";
+
 import { dateRangeValidator } from "src/app/shared/common/validations";
 import { CommonService } from "src/app/shared/services/common.service";
 import { LoggerService } from "src/app/shared/services/logger.service";
@@ -39,9 +35,7 @@ export class ManageEventComponent implements OnInit {
 
   @Input() id: string = "";
   @Input() editObject: any = "";
-  //Date value from calendarView.
   @Input() date: any = "";
-  profileImage: string | ArrayBuffer | undefined | null;
 
   constructor(
     private fb: FormBuilder,
@@ -56,17 +50,12 @@ export class ManageEventComponent implements OnInit {
     this.initializeEventForm();
 
     if (this.id) {
-      // this.editObject = findObjectNIndex(this.id);
       this.getEventById(this?.id);
-      // this.profileImage = this.editObject.object.image;
-      this.eventForm.patchValue(this.editObject.object);
     }
     if (this.date) {
       this.eventForm.get("timing")?.get("start")?.setValue(this.date.startDate);
       this.eventForm.get("timing")?.get("end")?.setValue(this.date.endDate);
     }
-    //Get event object from localStorage.
-    this.allEvent = getLocalStorage(EVENT);
   }
 
   /**
@@ -102,18 +91,6 @@ export class ManageEventComponent implements OnInit {
    */
   get fc() {
     return this.eventForm.controls;
-  }
-
-  /**
-   * Convert the normal Image path to Base64.
-   * @param event date of image field
-   */
-  onFileChange(event: any) {
-    let reader = new FileReader();
-    reader.onload = () => {
-      this.profileImage = reader.result;
-    };
-    reader.readAsDataURL(event.target.files[0]);
   }
 
   /**
